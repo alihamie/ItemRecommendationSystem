@@ -1,6 +1,7 @@
 package DataBase;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 
 /******************************************************************************
@@ -21,26 +22,25 @@ public class Users {
 
     private String id;
     private Hashtable<String,Integer> ratings = new Hashtable<>();
-    private ArrayList<Movies> ratedMovies = new ArrayList<>();
-
-
+    private Hashtable<String,Movies> ratedMovies = new Hashtable<>();
+    private Hashtable<String,Double> recommended_list = new Hashtable<String,Double>();
     public Users(String id,Movies movie,String rating)
     {
         this.id = id;
-        this.ratedMovies.add(movie);
+        this.ratedMovies.put(movie.getId(),movie);
         this.ratings.put(movie.getId(),Integer.parseInt(rating));
     }
 
 
     /******************************************************************************
      *
-     *  This function is used to add the movie and as well as add its corresponding rating
+     *  This function is used to add the movie and as well as add i ts corresponding rating
      *  in the ratings hashtable
      *
      ******************************************************************************/
     public void addMovie(Movies movie,String rating)
     {
-        ratedMovies.add(movie);
+        ratedMovies.put(movie.getId(),movie);
         ratings.put(movie.getId(),Integer.parseInt(rating));
 
     }
@@ -51,7 +51,7 @@ public class Users {
      *  all the movies the user has rated
      *
      *****************************************************************************/
-    public ArrayList<Movies> getRatedMovies()
+    public Hashtable<String,Movies> getRatedMovies()
     {
         return this.ratedMovies;
     }
@@ -67,16 +67,32 @@ public class Users {
     public void printUser()
     {
 
-        System.out.printf("User %s liked and rated the following: \n",this.id);
+        System.out.printf("User %s liked and rated %d movies: \n",this.id,this.getRatedMovies().size());
 
-        for(int i = 0; i <ratedMovies.size(); ++i)
+
+        for(String s: ratings.keySet())
         {
-            System.out.printf("%s rated: %s \n",ratedMovies.get(i).getTitle(),ratings.get(i));
-
+            System.out.printf("%s rated: %s \n",ratedMovies.get(s).getTitle(),ratings.get(s));
         }
 
     }
 
+    public void addRecommendation(String id, Double v)
+    {
+        this.recommended_list.put(id,v);
+
+    }
+
+    public void clearRecommendations()
+    {
+        this.recommended_list.clear();
+
+    }
+
+    public Hashtable<String,Double> getRecommended_list() {
+
+        return this.recommended_list;
+    }
     /******************************************************************************
      *
      *  Returns the hastable of the movie id's and their rating
@@ -104,8 +120,8 @@ public class Users {
         if( m.getTitle() == null)
             return false;
 
-        for(Movies n : ratedMovies) {
-            if (n.getId().equals(m.getId()))
+        for(String s : ratedMovies.keySet()) {
+            if (ratedMovies.get(s).getId().equals(m.getId()))
                 return true;
         }
 
@@ -114,9 +130,21 @@ public class Users {
 
     }
 
+    public double getAverageRating()
+    {
+        double sum = 0;
+
+        for(String s : ratings.keySet())
+        sum+= ratings.get(s);
+
+        return  sum/ratings.size();
+    }
+
     @Override
     public String toString()
     {
         return id;
     }
+
+
 }

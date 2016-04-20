@@ -50,15 +50,34 @@ public class Vector {
         this.data = new double[N];
     }
 
-    public Vector(Hashtable<String,Users> ratings,String id)
+    public double[] getArray()
     {
-        this.N = ratings.size();
-        this.data = new double[N];
-        int i = 0;
-        for(String s : ratings.keySet())
-        {
-           this.data[i] = ratings.get(s).getRatings().get(id).doubleValue();
-            ++i;
+        return this.data;
+    }
+    public Vector(Hashtable<String,Users> users,String id)
+    {
+        if(users.size() > 0) {
+            this.N = users.size();
+            this.data = new double[N];
+            int i = 0;
+            for (String s : users.keySet()) {
+                Users u = users.get(s);
+                try {
+                    this.data[i] = u.getRatings().get(id).doubleValue();
+                }catch (NullPointerException e)
+                {
+                    System.out.println("null pointer at user" +s );
+                    break;
+                }
+                ++i;
+            }
+        }
+        else{
+
+            this.N = 1;
+            this.data = new double[N];
+            data[0] = 0;
+
         }
     }
 

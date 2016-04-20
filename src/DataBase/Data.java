@@ -4,9 +4,7 @@ import javax.jws.soap.SOAPBinding;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by Ali Hamie on 3/10/2016.
@@ -28,6 +26,9 @@ public class Data {
    // public  static  Movies[] movies = new Movies[1689];
     public  static HashMap<String,Users> users = new HashMap<String,Users>();
 
+
+    public static double[][] itemSimilairty;
+    public static ArrayList<ArrayList<Double>> itemSimilairty2 = new ArrayList< ArrayList<Double> > ();
     public static Data instance = new Data();
 
     private Data()
@@ -87,6 +88,8 @@ public class Data {
         }
 
         input.close();
+        //dynamically initialize the size of item similairty matrix
+        itemSimilairty  = new double[movies.size()+1][movies.size()+1];
 
     }
 
@@ -117,12 +120,37 @@ public class Data {
         if(instance.users.get(id)  == null)
         {
             instance.users.put(id,new Users(id,movie,rating) );
+            instance.movies.get(movie.getId()).addUser(new Users(id,movie,rating));
+        }
+        else {
+            instance.users.get(id).addMovie(movie, rating);
+            instance.movies.get(movie.getId()).addUser(instance.users.get(id) );
+        }
+
+
+    }
+
+    /******************************************************************************
+     *
+     * After all the users have been read and their ratings for every item has been
+     * read we need to update it in the data structures we have so  thay they reflect
+     * the current database.
+     *
+     ******************************************************************************/
+   public static void updateRatings()
+    {
+
+
+        for(String i : Data.movies.keySet())
+        {
+            Hashtable<String,Users> us =  Data.movies.get(i).getLikedUsers();
+            for(String j : us.keySet())
+            {
+
+                Data.movies.get(i).addUser( Data.users.get(us.get(j).getId()));
+            }
 
         }
-        else instance.users.get(id).addMovie(movie,rating);
-
-
-        instance.movies.get(movie.getId()).addUser(new Users(id,movie,rating));
 
     }
 

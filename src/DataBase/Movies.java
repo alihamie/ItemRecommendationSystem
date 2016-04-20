@@ -56,7 +56,7 @@ public class Movies {
     }
 
     //this is used to get All the users who liked this specific movie
-    public Hashtable getLikedUsers()
+    public Hashtable<String,Users> getLikedUsers()
     {
 
         return this.likedUsers;
