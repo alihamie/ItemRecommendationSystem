@@ -1,5 +1,6 @@
 The following project shows different Item-based similarity algorithms on the movie lens data set.
-To run the project you need an IntelJ environment.
+To run the project you need an IntelJ environment where you just upload the project and run it
+or using a terminal you can do the following:
 
 Go to DatabasesProject\ItemRecommendationSystem\out\artifacts\DatabasesProject_jar
 and use the following command : java -jar DatabaseProject.jar
